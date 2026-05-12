@@ -3,6 +3,9 @@
 ## Overview
 A cloud-based file management system built with Flask, MySQL, and Apache for the Cloud Computing course.
 
+## Access the System
+**Live Demo URL:** `http://192.168.1.13:8000`
+
 ## Features
 - ✅ User Authentication (Login/Logout)
 - ✅ File Upload/Download/Delete

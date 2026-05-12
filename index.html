@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Cloud Storage System | Student File Management</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        /* Header */
+        .header {
+            background: white;
+            border-radius: 10px;
+            padding: 20px 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .header h1 {
+            color: #667eea;
+            font-size: 24px;
+        }
+        
+        .header p {
+            color: #666;
+            font-size: 14px;
+        }
+        
+        /* Cards */
+        .card {
+            background: white;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .stat-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .stat-number {
+            font-size: 36px;
+            font-weight: bold;
+            color: #667eea;
+        }
+        
+        .stat-label {
+            color: #666;
+            margin-top: 5px;
+        }
+        
+        /* Forms */
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #333;
+            font-weight: 500;
+        }
+        
+        input[type="text"],
+        input[type="password"],
+        input[type="file"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        
+        button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background 0.3s;
+        }
+        
+        button:hover {
+            background: #5a67d8;
+        }
+        
+        .btn-danger {
+            background: #e53e3e;
+        }
+        
+        .btn-danger:hover {
+            background: #c53030;
+        }
+        
+        .btn-success {
+            background: #48bb78;
+        }
+        
+        /* Table */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        th {
+            background: #f7fafc;
+            color: #4a5568;
+            font-weight: 600;
+        }
+        
+        /* Alerts */
+        .alert {
+            padding: 12px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+        }
+        
+        .alert-success {
+            background: #c6f6d5;
+            color: #22543d;
+            border: 1px solid #9ae6b4;
+        }
+        
+        .alert-error {
+            background: #fed7d7;
+            color: #742a2a;
+            border: 1px solid #fc8181;
+        }
+        
+        /* Hide/Show */
+        .hidden {
+            display: none;
+        }
+        
+        /* Actions */
+        .actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .btn-small {
+            padding: 5px 10px;
+            font-size: 12px;
+        }
+        
+        .upload-area {
+            background: #f7fafc;
+            border: 2px dashed #cbd5e0;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        @media (max-width: 768px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            .header {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Login View -->
+        <div id="loginView">
+            <div class="header">
+                <div>
+                    <h1>☁️ Cloud Storage System</h1>
+                    <p>Student File Management Platform</p>
+                </div>
+            </div>
+            <div class="card">
+                <h2>Login to Your Account</h2>
+                <div id="loginAlert"></div>
+                <form id="loginForm">
+                    <div class="form-group">
+                        <label>Username</label>
+                        <input type="text" id="loginUsername" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="password" id="loginPassword" required>
+                    </div>
+                    <button type="submit">Login</button>
+                </form>
+                <p style="margin-top: 15px; text-align: center; color: #666;">
+                    <strong>Demo Account:</strong><br>
+                    Username: student1<br>
+                    Password: pass123
+                </p>
+            </div>
+        </div>
+        
+        <!-- Dashboard View -->
+        <div id="dashboardView" class="hidden">
+            <div class="header">
+                <div>
+                    <h1>☁️ Cloud Storage System</h1>
+                    <p>Welcome, <span id="currentUser"></span>!</p>
+                </div>
+                <button onclick="logout()" class="btn-danger">Logout</button>
+            </div>
+            
+            <div id="dashboardAlert"></div>
+            
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number" id="totalFiles">0</div>
+                    <div class="stat-label">Total Files</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="totalSize">0 B</div>
+                    <div class="stat-label">Storage Used</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="fileTypes">0</div>
+                    <div class="stat-label">File Types</div>
+                </div>
+            </div>
+            
+            <div class="upload-area">
+                <h3>📤 Upload New File</h3>
+                <form id="uploadForm">
+                    <input type="file" id="uploadFile" required>
+                    <button type="submit" class="btn-success">Upload File</button>
+                </form>
+                <p style="margin-top: 10px; font-size: 12px; color: #666;">
+                    Supported formats: PDF, DOC, DOCX, TXT, JPG, PNG (Max 50MB)
+                </p>
+            </div>
+            
+            <div class="card">
+                <h3>📁 My Files</h3>
+                <div id="filesList">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>File Name</th>
+                                <th>Size</th>
+                                <th>Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="filesTableBody">
+                            <tr><td colspan="4" style="text-align: center;">No files uploaded yet</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        let currentUser = null;
+        let userFiles = {};
+        
+        // Load data from localStorage
+        function loadUserData() {
+            const saved = localStorage.getItem('cloudStorage_' + currentUser);
+            if (saved) {
+                userFiles = JSON.parse(saved);
+            } else {
+                userFiles = [];
+            }
+            updateDashboard();
+        }
+        
+        // Save data to localStorage
+        function saveUserData() {
+            localStorage.setItem('cloudStorage_' + currentUser, JSON.stringify(userFiles));
+        }
+        
+        // Update dashboard display
+        function updateDashboard() {
+            // Update stats
+            const totalFiles = userFiles.length;
+            let totalBytes = 0;
+            const fileTypesSet = new Set();
+            
+            userFiles.forEach(file => {
+                totalBytes += file.size;
+                const ext = file.name.split('.').pop();
+                fileTypesSet.add(ext);
+            });
+            
+            document.getElementById('totalFiles').innerHTML = totalFiles;
+            document.getElementById('totalSize').innerHTML = formatBytes(totalBytes);
+            document.getElementById('fileTypes').innerHTML = fileTypesSet.size;
+            
+            // Update table
+            const tbody = document.getElementById('filesTableBody');
+            if (userFiles.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" style="text-align: center;">No files uploaded yet</td></tr>';
+            } else {
+                let html = '';
+                for (let i = 0; i < userFiles.length; i++) {
+                    const file = userFiles[i];
+                    html += `
+                        <tr>
+                            <td>${escapeHtml(file.name)}</td>
+                            <td>${formatBytes(file.size)}</td>
+                            <td>${file.date || 'Unknown'}</td>
+                            <td class="actions">
+                                <button onclick="downloadFile(${i})" class="btn-small">Download</button>
+                                <button onclick="deleteFile(${i})" class="btn-small btn-danger">Delete</button>
+                            </td>
+                        </tr>
+                    `;
+                }
+                tbody.innerHTML = html;
+            }
+        }
+        
+        // Format bytes to human readable
+        function formatBytes(bytes) {
+            if (bytes === 0) return '0 B';
+            const k = 1024;
+            const sizes = ['B', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+        
+        // Escape HTML
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+        
+        // Show alert message
+        function showAlert(type, message, view) {
+            const alertDiv = document.getElementById(view === 'dashboard' ? 'dashboardAlert' : 'loginAlert');
+            const className = type === 'success' ? 'alert-success' : 'alert-error';
+            alertDiv.innerHTML = `<div class="alert ${className}">${message}</div>`;
+            setTimeout(() => {
+                alertDiv.innerHTML = '';
+            }, 3000);
+        }
+        
+        // Handle login
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const username = document.getElementById('loginUsername').value;
+            const password = document.getElementById('loginPassword').value;
+            
+            if (username === 'student1' && password === 'pass123') {
+                currentUser = username;
+                document.getElementById('loginView').classList.add('hidden');
+                document.getElementById('dashboardView').classList.remove('hidden');
+                document.getElementById('currentUser').innerHTML = username;
+                loadUserData();
+                showAlert('success', 'Login successful!', 'dashboard');
+            } else {
+                showAlert('error', 'Invalid username or password!', 'login');
+            }
+        });
+        
+        // Handle upload
+        document.getElementById('uploadForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const fileInput = document.getElementById('uploadFile');
+            const file = fileInput.files[0];
+            
+            if (!file) {
+                showAlert('error', 'Please select a file!', 'dashboard');
+                return;
+            }
+            
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                const newFile = {
+                    name: file.name,
+                    size: file.size,
+                    type: file.type,
+                    data: event.target.result,
+                    date: new Date().toLocaleString()
+                };
+                
+                userFiles.push(newFile);
+                saveUserData();
+                updateDashboard();
+                showAlert('success', `File "${file.name}" uploaded successfully!`, 'dashboard');
+                fileInput.value = '';
+            };
+            reader.readAsDataURL(file);
+        });
+        
+        // Download file
+        function downloadFile(index) {
+            const file = userFiles[index];
+            const link = document.createElement('a');
+            link.href = file.data;
+            link.download = file.name;
+            link.click();
+        }
+        
+        // Delete file
+        function deleteFile(index) {
+            if (confirm('Are you sure you want to delete this file?')) {
+                const fileName = userFiles[index].name;
+                userFiles.splice(index, 1);
+                saveUserData();
+                updateDashboard();
+                showAlert('success', `File "${fileName}" deleted successfully!`, 'dashboard');
+            }
+        }
+        
+        // Logout
+        function logout() {
+            currentUser = null;
+            userFiles = [];
+            document.getElementById('loginView').classList.remove('hidden');
+            document.getElementById('dashboardView').classList.add('hidden');
+            document.getElementById('loginUsername').value = '';
+            document.getElementById('loginPassword').value = '';
+        }
+    </script>
+</body>
+</html>

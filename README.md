@@ -19,7 +19,7 @@ A cloud-based file management system built with Flask, MySQL, and Apache for the
 |-----------|------------|
 | Backend | Flask (Python) |
 | Database | MySQL |
-| Web Server | Apache with mod_wsgi |
+| Web Server | Apache2 |
 | Frontend | HTML/CSS/JavaScript |
 
 ## Installation Guide
